@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>index</title>
+<script src="./Jquery3.4.1.js"></script>
+</head>
+<body>
+	<h2>index page</h2>
+	手机号：
+	<input id="phoneNumber" type="text">
+	<br />
+	<button id="getOneTimePassword">获取短信验证码</button>
+
+</body>
+<script>
+	console.log("---log---");
+	$(function() {
+		$("#getOneTimePassword").click(function() {
+			var phoneNumber = $("#phoneNumber").val();
+			if (phoneNumber == "" || phoneNumber == undefined) {
+				console.log("电话号码不能为空")
+				return;
+			}
+			console.log("phoneNumber=", phoneNumber)
+			$.ajax({
+				url : "getOneTimePassword",
+				type : "POST",
+				data : {
+					"phoneNumber" : phoneNumber
+				},
+				dataType : "JSON",
+				success : function(data) {
+					console.log("---成功返回数据---" + JSON.stringify(data));
+				},
+				error : function(data) {
+					console.log("---异常返回数据---" + JSON.stringify(data));
+				}
+
+			});
+		});
+
+		//longRequest();
+
+	})
+	console.log("---log2---");
+	function longRequest() {
+		$.ajax({
+			url : "systemPull5/zyw",
+			type : "GET",
+			dataType : "JSON",
+			success : function(data) {
+				console.log(JSON.stringify(data));
+				longRequest();
+			}
+		});
+	}
+</script>
+</html>

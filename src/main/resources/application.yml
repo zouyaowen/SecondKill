@@ -1,3 +1,5 @@
+server:
+  port: 80
 spring:
   datasource:
     username: root
@@ -12,6 +14,13 @@ spring:
     view:
       prefix: /
       suffix: .html
+  redis:
+    host: 172.16.188.11
+    port: 8679
+    password: 123456
+    database: 0
+    # 连接超时时间（毫秒）默认是2000ms
+    timeout: 2000
 
 
 mybatis:

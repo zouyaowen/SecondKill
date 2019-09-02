@@ -1,59 +1,292 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="UTF-8">
-<title>index</title>
-<script src="./Jquery3.4.1.js"></script>
-</head>
-<body>
-	<h2>index page</h2>
-	手机号：
-	<input id="phoneNumber" type="text">
-	<br />
-	<button id="getOneTimePassword">获取短信验证码</button>
-
-</body>
-<script>
-	console.log("---log---");
-	$(function() {
-		$("#getOneTimePassword").click(function() {
-			var phoneNumber = $("#phoneNumber").val();
-			if (phoneNumber == "" || phoneNumber == undefined) {
-				console.log("电话号码不能为空")
-				return;
+	<head>
+		<meta charset="utf-8" />
+		<title>index</title>
+		<script src="./Jquery3.4.1.js"></script>
+		<style>
+			.hide{
+				display: none;
 			}
-			console.log("phoneNumber=", phoneNumber)
-			$.ajax({
-				url : "getOneTimePassword",
-				type : "POST",
-				data : {
-					"phoneNumber" : phoneNumber
-				},
-				dataType : "JSON",
-				success : function(data) {
-					console.log("---成功返回数据---" + JSON.stringify(data));
-				},
-				error : function(data) {
-					console.log("---异常返回数据---" + JSON.stringify(data));
+		</style>
+	</head>
+	<body>
+		<h2>index page</h2>
+		<a href="http://localhost:8080/yingqu/888" target="_blank">跳转指挥中心</a>
+		<div class="hide1">
+			手机号：
+			<input id="phoneNumber" type="text">
+			<br />
+			<button id="getOneTimePassword">获取短信验证码</button>
+		</div>
+		<div class="hide">
+			<h2>用户注册</h2>
+			手机号：<input id="phoneInput" type="text" /><br />
+			用户昵称：<input id="name" type="text" /><br />
+			性别：<input name="gender" type="radio" value="1" checked="checked" />男 <input name="gender" type="radio" value="2" />女
+			<br />
+			年龄：<input id="age" type="number" /><br />
+			手机验证码：<input id="otp" type="text" /><br />
+			登录密码：<input id="password" type="password" /><br />
+			<button id="register">注册</button>
+		</div>
+		<div class="hide1">
+			<h2>用户登录</h2>
+			手机号：<input id="telphone" type="text" /><br />
+			密码：<input id="loginPassword" type="password" /><br />
+			<button id="login">登录</button>
+		</div>
+		<div class="hide">
+			<h2>添加商品</h2>
+			商品名称：<input id="title" type="text" /><br />
+			商品描述：<input id="description" type="text" /><br />
+			商品价格：<input id="price" type="number" /><br />
+			商品库存：<input id="stock" type="number" /><br />
+			商品URL： <input id="imgUrl" type="text" /><br />
+			<button id="createItem">添加商品</button>
+		</div>
+
+
+		<div class="hide1">
+			<h2>下单</h2>
+			商品ID：<input id="itemId" type="number" /><br />
+			商品数量：<input id="quantity" type="number" /><br />
+			<button id="order">下单</button>
+		</div>
+
+
+	</body>
+	<script>
+		$(function() {
+
+
+
+			$("#order").click(function() {
+				var itemId = $("#itemId").val();
+				var quantity = $("#quantity").val();
+
+				if (!itemId) {
+					console.log("itemId不能为空");
+					return false;
+				}
+				if (!quantity) {
+					console.log("quantity不能为空");
+					return false;
 				}
 
+
+				$.ajax({
+					url: "http://127.0.0.1:8080/createOrder",
+					type: "POST",
+					data: {
+						"itemId": itemId,
+						"quantity": quantity
+					},
+					dataType: "JSON",
+					contentType: "application/x-www-form-urlencoded",
+					xhrFields: {
+						withCredentials: true
+					},
+					success: function(data) {
+						console.log("---下单成功返回数据---" + JSON.stringify(data));
+					},
+					error: function(data) {
+						console.log("---下单异常返回数据---" + JSON.stringify(data));
+					}
+				});
+
 			});
-		});
 
-		//longRequest();
 
-	})
-	console.log("---log2---");
-	function longRequest() {
-		$.ajax({
-			url : "systemPull5/zyw",
-			type : "GET",
-			dataType : "JSON",
-			success : function(data) {
-				console.log(JSON.stringify(data));
-				longRequest();
-			}
-		});
-	}
-</script>
+
+
+			$("#createItem").click(function() {
+				var title = $("#title").val();
+				var description = $("#description").val();
+				var price = $("#price").val();
+				var stock = $("#stock").val();
+				var imgUrl = $("#imgUrl").val();
+				if (!title) {
+					console.log("title不能为空");
+					return false;
+				}
+				if (!description) {
+					console.log("description不能为空");
+					return false;
+				}
+				if (!price) {
+					console.log("price不能为空");
+					return false;
+				}
+				if (!stock) {
+					console.log("stock不能为空");
+					return false;
+				}
+				if (!imgUrl) {
+					console.log("imgUrl不能为空");
+					return false;
+				}
+
+				$.ajax({
+					url: "http://127.0.0.1:8080/createItem",
+					type: "POST",
+					data: {
+						"title": title,
+						"description": description,
+						"price": price,
+						"stock": stock,
+						"imgUrl": imgUrl
+					},
+					dataType: "JSON",
+					contentType: "application/x-www-form-urlencoded",
+					xhrFields: {
+						withCredentials: true
+					},
+					success: function(data) {
+						console.log("---创建商品成功返回数据---" + JSON.stringify(data));
+					},
+					error: function(data) {
+						console.log("---创建商品异常返回数据---" + JSON.stringify(data));
+					}
+				});
+
+			});
+
+
+
+
+
+
+
+
+			$("#login").click(function() {
+				var telphone = $("#telphone").val();
+				var password = $("#loginPassword").val();
+				if (!telphone) {
+					console.log("phoneNumber不能为空");
+					return false;
+				}
+				if (!password) {
+					console.log("password不能为空");
+					return false;
+				}
+
+				$.ajax({
+					url: "http://127.0.0.1:8080/login",
+					type: "POST",
+					data: {
+						"telphone": telphone,
+						"password": password
+					},
+					dataType: "JSON",
+					contentType: "application/x-www-form-urlencoded",
+					xhrFields: {
+						withCredentials: true
+					},
+					success: function(data) {
+						console.log("---登录成功返回数据---" + JSON.stringify(data));
+					},
+					error: function(data) {
+						console.log("---登录异常返回数据---" + JSON.stringify(data));
+					}
+				});
+
+			});
+
+
+
+			$("#register").click(function() {
+				var phoneNumber = $("#phoneInput").val();
+				var name = $("#name").val();
+				var gender = $("input[name='gender']:checked").val();
+				var age = $("#age").val();
+				var otp = $("#otp").val();
+				var password = $("#password").val();
+
+				console.log("phoneNumber:", phoneNumber, name, gender, age, otp, password);
+				if (!phoneNumber) {
+					console.log("phoneNumber不能为空");
+					return false;
+				}
+				if (!name) {
+					console.log("name不能为空");
+					return false;
+				}
+				if (!gender) {
+					console.log("gender不能为空");
+					return false;
+				}
+				if (!age) {
+					console.log("age不能为空");
+					return false;
+				}
+				if (!otp) {
+					console.log("otp不能为空");
+					return false;
+				}
+				if (!password) {
+					console.log("password不能为空");
+					return false;
+				}
+
+				$.ajax({
+					url: "http://127.0.0.1:8080/register",
+					type: "POST",
+					data: {
+						"telphone": phoneNumber,
+						"name": name,
+						"gender": gender,
+						"age": age,
+						"otp": otp,
+						"password": password
+					},
+					dataType: "JSON",
+					contentType: "application/x-www-form-urlencoded",
+					xhrFields: {
+						withCredentials: true
+					},
+					success: function(data) {
+						console.log("---注册成功返回数据---" + JSON.stringify(data));
+					},
+					error: function(data) {
+						console.log("---注册异常返回数据---" + data);
+					}
+				});
+
+
+
+			});
+
+
+
+			$("#getOneTimePassword").click(function() {
+				var phoneNumber = $("#phoneNumber").val();
+				if (phoneNumber == "" || phoneNumber == undefined) {
+					console.log("电话号码不能为空")
+					return;
+				}
+				console.log("phoneNumber=", phoneNumber);
+				$.ajax({
+					url: "http://127.0.0.1:8080/getOneTimePassword",
+					type: "POST",
+					data: {
+						"phoneNumber": phoneNumber
+					},
+					dataType: "JSON",
+					contentType: "application/x-www-form-urlencoded",
+					xhrFields: {
+						withCredentials: true
+					},
+					success: function(data) {
+						console.log("---获取手机验证码成功返回数据---" + JSON.stringify(data));
+					},
+					error: function(data) {
+						console.log("---获取手机验证码异常返回数据---" + JSON.stringify(data));
+					}
+				});
+			});
+
+
+		})
+	</script>
 </html>

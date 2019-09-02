@@ -15,12 +15,16 @@ spring:
       prefix: /
       suffix: .html
   redis:
-    host: 172.16.188.11
+    host: 192.168.0.101
     port: 8679
     password: 123456
     database: 0
     # 连接超时时间（毫秒）默认是2000ms
     timeout: 2000
+    jedis: 
+      pool: 
+        max-active: 50
+        min-idle: 20
 
 
 mybatis:

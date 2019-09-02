@@ -1,12 +1,15 @@
 package org.zyw.secondkill.controller;
 
 import java.util.HashMap;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.DigestUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
@@ -34,6 +37,8 @@ public class UserController {
 	private UserService userService;
 	@Autowired
 	private HttpServletRequest request;
+	@Autowired
+	private RedisTemplate<Object, Object> redisTemplate;
 
 	/**
 	 * @Desc 获取用户信息
@@ -118,10 +123,17 @@ public class UserController {
 		// 用户登录服务，用来校验用户登录是否合法
 		UserModel userModel = userService.validatorLogin(telphone, password);
 
+		// 生成登录凭证
+		String token = UUID.randomUUID().toString();
+
+		redisTemplate.opsForValue().set(token, userModel);
+		// 设置超时时间为一个小时
+		redisTemplate.expire(token, 1, TimeUnit.HOURS);
+
 		// 将登录凭证添加至用户登录成功的Session中
-		request.getSession().setAttribute("LOGIN", true);
-		request.getSession().setAttribute("LOGIN_USER", userModel);
-		return CommonReturnType.create(userModel);
+		// request.getSession().setAttribute("LOGIN", true);
+		// request.getSession().setAttribute("LOGIN_USER", userModel);
+		return CommonReturnType.create(token);
 	}
 
 	private UserVO convertFromModel(UserModel userModel) {
